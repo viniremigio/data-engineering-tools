@@ -42,6 +42,7 @@ x-airflow-common:
       condition: service_healthy
   networks:
     - airflow_internal
+    - data-network
 
 services:
   airflow-webserver:
@@ -186,6 +187,7 @@ services:
       - db:/var/lib/postgresql/data
     networks:
       - airflow_internal
+      - data-network
     ports:
       - "35432:5432"
 volumes:
