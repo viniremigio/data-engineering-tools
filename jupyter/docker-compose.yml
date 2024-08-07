@@ -1,0 +1,19 @@
+services:
+
+  jupyter:
+    container_name: jupyter_notebook
+    build: .
+    
+    volumes:
+      - ./work:/home/jovyan/work
+    
+    ports:
+      - 8888:8888
+    
+    networks:
+      - data-network
+
+networks:
+
+  data-network:
+    external: true
