@@ -6,3 +6,4 @@ grafana/tempo-data/
 grafana/shared/logs/
 grafana/shared/grafana/lib
 grafana/shared/loki/chunks
+grafana/tests
