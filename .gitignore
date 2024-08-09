@@ -1,3 +1,8 @@
+.DS_STORE
 volume/
 minio/data/
 jupyter/work/
+grafana/tempo-data/
+grafana/shared/logs/
+grafana/shared/grafana/lib
+grafana/shared/loki/chunks

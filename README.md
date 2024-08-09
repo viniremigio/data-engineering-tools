@@ -8,6 +8,8 @@ This repo provides data engineering tools that are implemented in the Data world
 - [Cassandra](cassandra)
   
 - [Datahub](datahub)
+
+- [Grafana](grafana)
   
 - [Jupyter](jupyter)
 
@@ -26,3 +28,7 @@ This repo provides data engineering tools that are implemented in the Data world
 
 All these tools can be bootstrapped locally with Docker Compose. *They are not meant to be deployed in production environments*.
 
+Happy Benchmarking!
+
+# TODO
+- Setup an nginx to route requests without concerning about the port

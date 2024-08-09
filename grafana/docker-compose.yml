@@ -1,0 +1,95 @@
+services:
+
+  node-exporter:
+    container_name: node-exporter
+    image: prom/node-exporter
+    ports:
+      - 9100:9100
+    networks:
+      - data-network
+
+  tempo:
+    image: grafana/tempo:latest
+    networks:
+      - data-network
+    volumes:
+      - ./shared/tempo:/etc
+      - ./tempo-data:/var/tempo
+    ports:
+      - "4320:4317"  # otlp grpc
+      - "4321:4318"  # otlp http
+    entrypoint: sh -c "exec /tempo -config.file=/etc/tempo.yml"
+
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - data-network
+    volumes:
+      - ./shared/prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+    entrypoint: sh -c "exec /bin/prometheus --config.file=/etc/prometheus/prometheus-local.yml --web.enable-remote-write-receiver"
+
+  loki:
+    image: grafana/loki:latest
+    networks:
+      - data-network
+    command:
+      - "-config.file=/etc/loki/local-config.yaml"  
+    volumes:
+      - ./shared/loki/chunks:/loki/chunks/
+      - ./shared/loki/rules:/loki/rules/
+    ports:
+      - "3100:3100"
+
+  promtail:
+    image: grafana/promtail:latest
+    networks:
+      - data-network
+    command:
+      - "-config.file=/etc/promtail/config.yml"   
+    volumes:
+      - ./shared/logs/:/var/log/
+      - ./shared/promtail/:/etc/promtail/
+    depends_on:
+      - loki   
+
+  alloy:
+    image: grafana/alloy:latest  
+    networks:
+      - data-network
+    command:
+      - "-config.file=/etc/alloy/config.alloy"  
+    volumes:
+      - ./shared/alloy:/etc/alloy
+    ports:
+      - "4317:4317"  
+      - "4318:4318"
+      - "12345:12345"
+    
+    entrypoint: sh -c "exec /bin/alloy run /etc/alloy/config.alloy --storage.path=/var/lib/alloy/data --server.http.listen-addr=0.0.0.0:12345"
+
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - data-network
+    volumes:
+      - ./shared/grafana/provisioning/datasources/:/etc/grafana/provisioning/datasources
+      - ./shared/grafana/custom.ini:/etc/grafana/custom.ini
+      - ./shared/grafana/lib/grafana/:/var/lib/grafana/
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3000:3000"
+    entrypoint: sh -c "exec sh /run.sh"
+
+
+volumes:
+  prometheus-data:
+  tempo-data:
+
+networks:
+  data-network:
+    external: true
