@@ -1,6 +1,6 @@
 # Airbyte
 
-[Airbyte] is a data movement platform. Similar to:
+[Airbyte](https://airbyte.com/) is a data movement platform. Similar to:
 - [Fivetran](https://www.fivetran.com/)
 - [Stitch](https://www.stitchdata.com/)
 - [Matillion](https://www.matillion.com/)
